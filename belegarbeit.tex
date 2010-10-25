@@ -89,7 +89,7 @@ Abgabetermin: 25. Oktober 2010
 Mit einer Aufnahme eines Rastertunnelmikroskops ist außer den eigentlichen, sich teils über mehrere Ebenen erstreckenden Bilddaten ein Satz so genannter Metadaten verbunden. Diese Metadaten enthalten Informationen wie den aufgenommenen Bereich der Probe, eine Identifikation der Probe, den verwendeten Tunnelstrom, den Zeitpunkt der Aufnahme und weiteres.
 
 Ziel meiner Arbeit war und ist es, diese Metadaten in einfach durchsuchbarem Format gemeinsam mit den Ebeneninformationen der Aufnahme sowie etwaigen Notizen des Aufnehmenden zu speichern. Weiterhin sollen die Daten möglichst über ein Netzwerk abrufbar sein sowie einfach auf andere Computer kopierbar sein.
-\annot{Motivation?}
+%Motivation?
 
 \section{Paradigmen der Datenspeicherung}
 Daten können in verschiedenen Formen gespeichert werden. Ich möchte hier die drei für die gegebene Fragestellung vielversprechendsten Ansätze aufzeigen.
@@ -115,7 +115,7 @@ Die Stärken eines RDBMS liegen in der extrem hohen Abfragegeschwindigkeit bei e
 \subsubsection{Eigenschaften}
 Dokumentenbasierte Datenbanken (prominente Vertreter sind Lotus Notes, MongoDB und CouchDB) speichern Daten in Form von Informationseinheiten ohne feste Struktur, die dem Namen nach als Dokumente bezeichnet werden.
 
-Die Dokumente werden zumeist in Suchbäumen organisiert, was einen schnellen Zugriff anhand vorher festgelegter Parameter ermöglicht. Zum schnellen Zugriff auf einzelne Attribute (\annot{Eigenschaften}) der Dokumente verwenden dokumentenbasierte Datenbanken Indizes, meist ihrerseits Suchbäume, in denen Verweise auf die Dokumente oder die Dokumente selbst nach bestimmten Kriterien geordnet abgelegt werden.
+Die Dokumente werden zumeist in Suchbäumen organisiert, was einen schnellen Zugriff anhand vorher festgelegter Parameter ermöglicht. Zum schnellen Zugriff auf einzelne Attribute (Eigenschaften) der Dokumente verwenden dokumentenbasierte Datenbanken Indizes, meist ihrerseits Suchbäume, in denen Verweise auf die Dokumente oder die Dokumente selbst nach bestimmten Kriterien geordnet abgelegt werden.
 \subsubsection{Vorteile}
 Im Fall der Ablage von STM-Messergebnissen, die ein recht komplexes, verschachteltes Datenformat vorweisen, dass sich von Messung zu Messung in Details unterscheiden kann, sind solche Datenbanken sehr gut geeignet.
 
@@ -127,12 +127,12 @@ Der Apache-Webserver liefert die statischen HTML-Seiten sowie Stylesheets und Sk
 \subsection{Warum CouchDB}
 CouchDB ist ein recht bekannter und auch schon weit gediehener Vertreter der dokumentenbasierten Datenbanken. CouchDB ist dadurch, dass es konzeptuell auf JavaScript und der JavaScriptObjectNotation (JSON) basiert, für die Erstellung von Webanwendungen prädestiniert, da es somit zwischen Browser und Datenbank keine \pquote{Sprachbarriere} zu überwinden gibt (SQL--PHP--HTML).
 \subsection{Die Indexstrategie von CouchDB}
-In CouchDB hat jedes Dokument eine datenbankweit eindeutige ID. Diese ID ist in dem hier beschriebenen System eine UUID\footnote{UUIDs sind aus Zufallszahlen generierte Zeichenfolgen. Das Prinzip dahinter ist, dass die verwendeten Zufallszahlen so absurd groß sind, dass auch bei exzessiver Verwendung von UUIDs die Chance, dass man eine bereits vorhandene UUID generiert, irrelevant klein ist. UUIDs taugen somit in verteilten Systemen, deren Komponenten über den Status der anderen Komponenten jeweils keine Informationen besitzen, als eindeutige IDs.}. Die Dokumente in der Datenbank sind in einem \annot{B-Tree} anhand ihrer IDs geordnet gespeichert, was anhand der IDs einen sehr schnellen Zugriff auf sie ermöglicht.
+In CouchDB hat jedes Dokument eine datenbankweit eindeutige ID. Diese ID ist in dem hier beschriebenen System eine UUID\footnote{UUIDs sind aus Zufallszahlen generierte Zeichenfolgen. Das Prinzip dahinter ist, dass die verwendeten Zufallszahlen so absurd groß sind, dass auch bei exzessiver Verwendung von UUIDs die Chance, dass man eine bereits vorhandene UUID generiert, irrelevant klein ist. UUIDs taugen somit in verteilten Systemen, deren Komponenten über den Status der anderen Komponenten jeweils keine Informationen besitzen, als eindeutige IDs.}. Die Dokumente in der Datenbank sind in einem B-Tree anhand ihrer IDs geordnet gespeichert, was anhand der IDs einen sehr schnellen Zugriff auf sie ermöglicht.
 
 Um den Zugriff anhand anderer Attribute der Dokumente zu ermöglichen, kann man so genannte \emph{Views} erstellen. Views werden in Designdokumenten, Dokumenten in der Datenbank, die eine spezielle ID besitzen, spezifiziert und ordnen die Dokumente nach dem MapReduce-Algorithmus %cite
-ihrerseits nach gewählten Kategorien in \annot{B-Trees}. Pro Designdokument existiert ein \annot{Suchbaum}, den sich mehrere View teilen können.
+ihrerseits nach gewählten Kategorien in B-Trees. Pro Designdokument existiert ein Suchbaum, den sich mehrere View teilen können.
 \subsection{Die CouchDB-API}
-CouchDB ist eine NOSQL-Datenbank. Das bedeutet, dass CouchDB zur Abfrage der Daten kein SQL erfordert, dass im Fall komplex strukturierter Dokumente \annot{auch} nicht gut geeignet ist. CouchDB verwendet als Abfragemethode ein HTTP-basiertes REST-API. REST (REpresentational State Transfer) ist ein Konzept, nach dem in diesem Fall die abzufragenden Informationen in der URL kodiert werden und so dem Dienst, in diesem Fall CouchDB, übermittelt werden. Die CouchDB-API ist nicht rein REST-basiert, teilweise werden Abfragedaten auch per HTTP-POST-Request im Body (dem Inhaltsteil eines HTTP-Daten-\pquote{Paketes}) übertragen.
+CouchDB ist eine NOSQL-Datenbank. Das bedeutet, dass CouchDB zur Abfrage der Daten kein SQL erfordert, dass im Fall komplex strukturierter Dokumente nicht gut geeignet ist. CouchDB verwendet als Abfragemethode ein HTTP-basiertes REST-API. REST (REpresentational State Transfer) ist ein Konzept, nach dem in diesem Fall die abzufragenden Informationen in der URL kodiert werden und so dem Dienst, in diesem Fall CouchDB, übermittelt werden. Die CouchDB-API ist nicht rein REST-basiert, teilweise werden Abfragedaten auch per HTTP-POST-Request im Body (dem Inhaltsteil eines HTTP-Daten-\pquote{Paketes}) übertragen.
 
 Ein API-Aufruf läuft in CouchDB prinzipiell folgendermaßen ab:
 \begin{enumerate}
@@ -180,47 +180,57 @@ Eine Verallgemeinerung dieses Prinzips ist ein (noch nicht programmierter) Rende
 In der so erstellten Übersicht aller Attribute eines Knotens können diese bearbeitet sowie neue hinzugefügt werden. Die Metadaten der STM-Messung finden hier ihren Platz. Die Ebeneninformationen werden in einem der üblichen Dateiformate abgelegt und als Anhang (\emph{Attachment}) des den Knoten repräsentierenden Dokumentes in CouchDB hochgeladen. Hierbei müsste die zum Exportieren der Daten genutze Anwendung die Aufgabe übernehmen, Vorschaubilder für die Ebenen in einem webüblichen Grafikformat (\code{jpg}, \code{png} etc.) zu generieren, sodass der Benutzer schon in der Übersicht einen Blick auf die eigentliche Messung werfen kann.
 
 \section{Zusammenfassung und Fazit}
-Der bisherige Stand der Webanwendung (die im übrigen mangels besserer Vorschläge den Namen \emph{Taskforce} trägt) ist, dass diese wiewohl noch nicht für den Alltagsgebrauch geeignet doch schon die Hauptfunktionalität besitzt. Der aktuellste Quelltext kann vom geneigten 
+Der bisherige Stand der Webanwendung (die im übrigen mangels besserer Vorschläge den Namen \emph{Taskforce} trägt) ist, dass diese wiewohl noch nicht für den Alltagsgebrauch geeignet doch schon die Hauptfunktionalität besitzt. Der aktuelle Quelltext ist auf Github unter \url{http://github.com/jaseg/Taskforce} verfügbar.
+
+Ich werde an diesem Projekt auch in Zukunft noch weiterarbeiten, da es -- sei es als Notizverwaltung oder als STM-Messdatenarchiv -- ein sehr nützliches Werkzeug werden könnte.
+
+Derzeit arbeite ich an der Integration von Lucene, einer Volltextsuche der Apache Software Foundation\cite{lucene}, die sich dazu eignet, den gesamten Inhalt eines Dokumentes zu indizieren.
 
 \clearpage
 \textsf{\huge Anhang}
 \appendix
 
+\section{Glossar}
+\begin{description}
+\blitem{AJAX}{Asynchronous Javascript And XML}{Technik zum nachträglichen Laden von Daten auf einer Website, Basis der meisten Webanwendungen}
+\litem{Apache Software Foundation}{Organisation zur Förderung einiger Open-Source-Softwareprojekte\cite{apachefoundation}}
+\blitem{API}{Application Programming Interface}{Schnittstelle zum Zugriff eines Programms auf ein anderes}
+\litem{Client}{Anfragender Computer}
+\litem{CouchDB}{Dokumentenbasierte Datenbank der Apache Software Foundation}
+\litem{Design Document}{(CouchDB) Dokument mit einer mit \code{\_design} beginnenden ID, in dem Views definiert werden können\cite{couchdbguide}}
+\litem{Extended Attributes}{Erweiterte Dateiattribute, Technik, mit der bei einigen Dateisystemen beliebige Metadaten abgelegt werden können}
+\blitem{FAT (12/16/32)}{File Allocation Table}{Veraltetes, noch weit verwendetes, von Microsoft entwickeltes Dateisystem}
+\litem{Header/Body}{Kopfbereich mit Metadaten und eigentlicher Inhalt eines Datenpaketes}
+\blitem{HTML}{HyperText Markup Language}{Auszeichnungssprache für Textbasierte Inhalte, Grundtechnologie des \emph{www}}
+\blitem{HTTP}{HyperText Transfer Protocol}{Grundlage des \emph{www}, Protokoll zur Abfrage von Daten auf einem Server}
+\litem{JavaScript}{Clientseitige zur dynamischen Gestaltung von Webseiten verwendete Scriptsprache\cite{ecma262}\cite{isoiec162622002}}
+\blitem{JSON}{JavaScript Object Notation}{Menschenlesbares, textbasiertes Format zur Darstellung strukturierter Daten. Ist JavaScript-nativ und somit besonders für Webanwendungen geeignet}
+\blitem{NOSQL}{No(t Only) SQL}{Datenbank, die neben oder statt SQL andere Abfragesprachen zur Verfügung stellt}
+\litem{Parsing}{Übersetzen einer Eingabe in ein nutzbares Datenformat}
+\litem{Rendern}{Graphisches Darstellen von Daten}
+\litem{Request}{(In HTTP) Anfrage des Clients an den Server, wird durch
+\litem{Response}{Antwort des Servers auf eine Anfrage des Clients} verschiedene Typen charakterisiert (POST/GET/PUT/DELETE/etc.)\cite{rfc2616}}
+\blitem{REST}{REpresentational State Transfer}{Zitat aus der deutschen Wikipedia: \pquote{[REST] bezeichnet einen Softwarearchitekturstil für verteilte Hypermedia-Informationssysteme wie das World Wide Web}\cite{wprest} (überprüft und bestätigt.)}
+\litem{Server}{Dem Client einen Dienst (z.B.\ eine Webseite) anbietender Computer}
+\blitem{SQL}{Structured Query Language}{Abfragesprache für relationale Datenbanken}
+\blitem{STM}{Scanning Tunneling Microscope}{Rastertunnelmikroskop, Elektronenmikroskop, dass Aufnahmen von leitenden Oberflächen erstellt, indem die Oberfläche mit einer sehr feinen Nadel abgetastet wird, deren Abstand zur Oberfläche über den bei geringer angelegter Spannung durch den Tunneleffekt vorhandenen Tunnelstrom gemessen wird.}
+\litem{Suchbaum}{Eine baumartig aufgebaute, hierarchiche Datenstruktur, deren Ziel es ist, einzelne Elemente schnell auffinden zu können\cite{aocpfa}}
+\blitem{UUID}{Universal Unique IDentifier}{Aus einer sehr großen Zufallszahl generierte Identifikationsnummer, die durch die Dimension der Zufallszahl \emph{garantiert} einzigartig ist.}
+\litem{View}{(CouchDB) Ein Index mit bestimmten Map/Reduce-Funktionen\cite{cdbw02}}
+\litem{Web-Application}{Webseite, die sich durch Einsatz von AJAX wie eine typische Desktopanwendung verhält (Dialoge besitzt, interaktiv auf Nutzereingaben reagiert etc.)}
+\blitem{XML}{eXtensible Markup Language}{Universelle, sehr komplexe Auszeichnungssprache}
+\litem{Map/Reduce}{Verteilter Algorithmus zur Verarbeitung großer Datenmengen\cite{sawzall}}
+\end{description}
+\vspace*{3mm} %So bibtex does not split entries... Well, it's horribly unelegant, but it *works*.
 \section{Literaturverzeichnis}
 \vspace{-1.5cm}
 \nocite{*}
 \bibliographystyle{plain}
 \renewcommand{\refname}{}
 \bibliography{literatur}
-\bigskip
 
-\section{Glossar}
-\begin{description}
-\blitem{NOSQL}{No(t Only) SQL}{Datenbank, die neben oder statt SQL andere Abfragesprachen zur Verfügung stellt}
-%SQL
-%STM
-%Extended Attributes
-%API
-%rendern
-%JSON
-%HTML
-%FAT (32)
-%Web-Application
-%Parsing
-%Client
-%Server
-%Design Document
-%View
-%HTTP
-%Header/Body
-%UUID
-%Request (POST/GET/PUT/DELETE/etc.)
-%JavaScript
-%Apache
-%REST
-%Suchbaum
-%mod_proxy
-%XML
-%CouchDB
-\end{description}
+\section{Eigenständigkeitserklärung}
+{\scriptsize(Nach: \url{http://waste.informatik.hu-berlin.de/~46halbe/eigenstaendig.html}, 24.\ Okt.\ 2010)}
+
+Ich versichere hiermit, daß ich die vorstehende Arbeit selbständig verfasst und keine anderen als die angegebenen Hilfsmittel benutzt habe. Die Stellen, die anderen Werken dem Wortlaut oder dem Sinn nach entnommen wurden, habe ich in jedem einzelnen Fall durch die Angabe der Quelle als Entlehnung kenntlich gemacht.
 \end{document}
