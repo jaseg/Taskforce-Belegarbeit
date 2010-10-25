@@ -1,0 +1,226 @@
+\documentclass[12pt,ngerman,a4]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{ngerman}
+\usepackage[ngerman]{babel} 
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{times}
+\usepackage[a4paper, left=3cm, right=2.5cm, top=2.5cm, bottom=2.5cm, headheight=25mm, headsep=5mm]{geometry}
+\usepackage[pdftex]{graphicx,color}
+%\usepackage{floatflt}
+%\usepackage[style=long,border=none,header=none,cols=3,toc=false,section=false]{glossary}
+\usepackage[nonumberlist, acronym, section]{glossaries} %toc,
+\usepackage{listings}
+\definecolor{lightgray}{rgb}{.95,.95,.95}
+\definecolor{darkblue}{rgb}{0,0,.6}
+\definecolor{darkred}{rgb}{.6,0,0}
+\definecolor{darkgreen}{rgb}{0,.6,0}
+\definecolor{red}{rgb}{.98,0,0}
+\lstloadlanguages{C++}
+\lstset{%
+	language=C++,
+	basicstyle=\footnotesize\ttfamily,
+	commentstyle=\color{darkgreen},%\itshape
+	keywordstyle=\bfseries\color{darkblue},
+	stringstyle=\color{darkred},
+	showspaces=false,
+	showtabs=false,
+	columns=fixed,
+	numbers=left,
+	frame=none,
+	numberstyle=\tiny,
+	breaklines=true,
+%	backgroundcolor=\color{lightgray},
+	showstringspaces=false,
+	xleftmargin=1cm
+}%
+\newcommand{\bitem}{\item[--]}
+\newcommand{\litem}[2]{\item[#1 --] #2}
+\newcommand{\blitem}[3]{\item[#1 --] \texttt{#2} -- #3}
+\newcommand{\gfo}{\grqq\ }
+\newcommand{\gfu}{\glqq}
+\newcommand{\zquote}[2]{\glqq #1\grqq\ (Z.\ #2)}
+\newcommand{\pquote}[1]{\glqq #1\grqq}
+\newcommand{\nquote}[2]{#1: \glqq #2\grqq}
+\newcommand{\nwquote}[3]{#1 -- \emph{#2}: \glqq #3\grqq}
+\newcommand{\nwyquote}[4]{#1 -- \emph{#2} (#3): \glqq #4\grqq}
+\newcommand{\diff}{\mathrm{d}}
+\usepackage{scrpage2}
+\usepackage{cite}
+\chead{\thepage}
+\cfoot{}
+%\renewcommand{\glossaryname}{}
+\newglossary[slg]{symbolslist}{syi}{syg}{Glossar}
+\renewcommand*{\glspostdescription}{}
+\makeglossaries
+%\makeglossary
+\onehalfspacing
+\setlength{\parskip}{12pt plus4pt minus2pt}
+\newcommand{\annot}[1]{{\textcolor{red}{#1}}}%\footnotesize
+\newcommand{\annotsolved}[1]{{\footnotesize\textcolor{green}{#1}}}
+\newcommand{\code}[1]{\texttt{#1}}
+\begin{document}
+
+\hyphenation{Mess-er-geb-nis-se}
+\hyphenation{Ja-va-Script}
+
+\vspace*{3cm}
+Speichern von STM-Aufnahmen\\
+\vspace*{1cm}
+\large Fachgebiete Physik, Informatik
+Jan Sebastian Götte, 12n (Abiturjahrgang 2011)\\
+s@$2\pi$.eu\\
+Landesschule Pforta\\
+Betreuender Lehrer: Uwe Krägefski
+24. Oktober 2010\\
+Bearbeitungszeitraum: September 2009 bis Oktober 2010\\
+Abgabetermin: 25. Oktober 2010
+
+\thispagestyle{empty}
+\newpage
+%\vspace*{3cm}
+\tableofcontents
+\pagestyle{scrheadings}
+\pagenumbering{arabic}
+\newpage
+\section{Anforderungen}
+Mit einer Aufnahme eines Rastertunnelmikroskops ist außer den eigentlichen, sich teils über mehrere Ebenen erstreckenden Bilddaten ein Satz so genannter Metadaten verbunden. Diese Metadaten enthalten Informationen wie den aufgenommenen Bereich der Probe, eine Identifikation der Probe, den verwendeten Tunnelstrom, den Zeitpunkt der Aufnahme und weiteres.
+
+Ziel meiner Arbeit war und ist es, diese Metadaten in einfach durchsuchbarem Format gemeinsam mit den Ebeneninformationen der Aufnahme sowie etwaigen Notizen des Aufnehmenden zu speichern. Weiterhin sollen die Daten möglichst über ein Netzwerk abrufbar sein sowie einfach auf andere Computer kopierbar sein.
+\annot{Motivation?}
+
+\section{Paradigmen der Datenspeicherung}
+Daten können in verschiedenen Formen gespeichert werden. Ich möchte hier die drei für die gegebene Fragestellung vielversprechendsten Ansätze aufzeigen.
+\subsection{Dateisysteme}
+\subsubsection{Eigenschaften}
+Seit Menschengedenken ist das Dateisystem der Ablageort der Wahl für Daten aller Art. Es unterstützt die Speicherung der Daten in so genannten \emph{Dateien}, binären Datenblöcken, die sich an einer bestimmten Position des Dateisystems befinden und über diese sowie einen \emph{Namen} identifizierbar sind. Neben dem Namen können bei den meisten entwickelten Dateisystemen (zu denen FAT32 nicht gehört) weitere Metadaten gespeichert werden, standardmäßig sind dies das letzte Modifikationsdatum der Datei, mithilfe so genannter \emph{Extended Attributes} ist jedoch auch die Ablage von Informationen wie Informationen über eine STM-Messung denkbar.
+\subsubsection{Nachteile}
+Nachteilig bei der Verwendung eines Dateisystems als Ablage für STM-\linebreak Messergebnisse ist, dass ein Dateisystem nicht per se netzwerkfähig ist, d.h.\ es ist nicht ohne Zusatzsoftware möglich, von mehreren Computern mit ihm zu arbeiten. Weiterhin ist ein Dateisystem besonders bei der Ablage großer Datenmengen effizient, diese Effizienz nimmt mit steigender Dateianzahl und sinkender Dateigröße ab. Das Duplizieren der gespeicherten Informationen zwecks Backup oder in dem Fall, dass ein Forscher die Messdaten mit nach Hause oder auf Reisen nehmen möchte, geschähe mit einem speziellen Programm wie \emph{rsync} \cite{manrsync}.
+
+Würde man STM-Messdaten in großer Menge bei einer großen Anzahl darauf zugreifender Benutzer in einem Dateisystem speichern, wäre ein Dateisystem jedoch ein recht ineffizientes und somit effektiv langsames Mittel der Datenspeicherung. Heutige Dateisysteme können auf gemäßigter Computerhardware bei großer Datenmenge einige Tausend Dateioperationen (Metadaten lesen, Öffnen etc.) pro Sekunde ausführen. %Benchmarks!
+Läuft nun außer gezielten Anfragen an einzelne Dateien noch ein Suchprogramm, %cite: matrix
+dass sämtliche Dateien nach Schlüsselwörtern durchforstet, kann das bei einigen zehntausend Dateien und einigen Nutzern zu einem \pquote{zähen} Verhalten des Systems führen.
+\subsection{Relationale Datenbankmanagementsysteme (RDBMS)}
+\subsubsection{Eigenschaften}
+In relationalen Datenbanken bzw.\ in genauerem Jargon relationalen Datenbankmanagementsystemen werden Daten in Form von Datensätzen in Tabellen gespeichert, dabei enthalten alle Datensätze zu einer \pquote{Spalte} der Tabelle, die einem Attribut entspricht, einen Wert für diese Spalte vordefinierten Datentyps.
+\subsubsection{Nachteile}
+RDBMS sind nicht für die Speicherung großer Datenblöcke wie den Ebeneninformationen der STM-Messungen ausgelegt. Obwohl theoretisch möglich, ist die Ablage solcher Datenmengen in RDBMS nicht elegant.
+
+Ein RDBMS setzt eine klar definierte Datenstruktur voraus. Bei der Erstellung der Tabellen der Datenbank muss genau bekannt sein, welche Felder benötigt werden und welche Beziehungen zwischen diesen Feldern abgefragt werden. Bei STM-Messdaten, die wahrscheinlich von verschiedenen Geräten sowie verschiedenen Proben kommen, wäre das jedoch eine starke Einschränkung, da sich mehrere Mikroskope sowie mehrere Proben in den zu Verfügung stehenden Datenfeldern unterscheiden können. Möglichkeiten, die gewollte Flexibilität z.B.\ durch Ablegen von XML-formatierten Daten in einem Datenfeld sind nicht besonders performant sowie relativ unelegant.
+
+Die Stärken eines RDBMS liegen in der extrem hohen Abfragegeschwindigkeit bei einfachen Tabellen, da das Datenformat einer STM-Messung jedoch wesentlich komplexer ist, dürfte eine Umsetzung desselben in einer relationalen Datenbank schwierig sein.
+\subsection{Dokumentenbasierte Datenbanken}
+\subsubsection{Eigenschaften}
+Dokumentenbasierte Datenbanken (prominente Vertreter sind Lotus Notes, MongoDB und CouchDB) speichern Daten in Form von Informationseinheiten ohne feste Struktur, die dem Namen nach als Dokumente bezeichnet werden.
+
+Die Dokumente werden zumeist in Suchbäumen organisiert, was einen schnellen Zugriff anhand vorher festgelegter Parameter ermöglicht. Zum schnellen Zugriff auf einzelne Attribute (\annot{Eigenschaften}) der Dokumente verwenden dokumentenbasierte Datenbanken Indizes, meist ihrerseits Suchbäume, in denen Verweise auf die Dokumente oder die Dokumente selbst nach bestimmten Kriterien geordnet abgelegt werden.
+\subsubsection{Vorteile}
+Im Fall der Ablage von STM-Messergebnissen, die ein recht komplexes, verschachteltes Datenformat vorweisen, dass sich von Messung zu Messung in Details unterscheiden kann, sind solche Datenbanken sehr gut geeignet.
+
+\section{Die konkret verwendete Software}
+\subsection{Überblick}
+Das verwendete System besteht aus CouchDB, einer dokumentenbasierten Datenbank, dem Apache Webserver sowie dem Browser auf dem Clientcomputer.
+
+Der Apache-Webserver liefert die statischen HTML-Seiten sowie Stylesheets und Skripte für die Webanwendung an den Clienten aus und leitet Anfragen an die Datenbank weiter.
+\subsection{Warum CouchDB}
+CouchDB ist ein recht bekannter und auch schon weit gediehener Vertreter der dokumentenbasierten Datenbanken. CouchDB ist dadurch, dass es konzeptuell auf JavaScript und der JavaScriptObjectNotation (JSON) basiert, für die Erstellung von Webanwendungen prädestiniert, da es somit zwischen Browser und Datenbank keine \pquote{Sprachbarriere} zu überwinden gibt (SQL--PHP--HTML).
+\subsection{Die Indexstrategie von CouchDB}
+In CouchDB hat jedes Dokument eine datenbankweit eindeutige ID. Diese ID ist in dem hier beschriebenen System eine UUID\footnote{UUIDs sind aus Zufallszahlen generierte Zeichenfolgen. Das Prinzip dahinter ist, dass die verwendeten Zufallszahlen so absurd groß sind, dass auch bei exzessiver Verwendung von UUIDs die Chance, dass man eine bereits vorhandene UUID generiert, irrelevant klein ist. UUIDs taugen somit in verteilten Systemen, deren Komponenten über den Status der anderen Komponenten jeweils keine Informationen besitzen, als eindeutige IDs.}. Die Dokumente in der Datenbank sind in einem \annot{B-Tree} anhand ihrer IDs geordnet gespeichert, was anhand der IDs einen sehr schnellen Zugriff auf sie ermöglicht.
+
+Um den Zugriff anhand anderer Attribute der Dokumente zu ermöglichen, kann man so genannte \emph{Views} erstellen. Views werden in Designdokumenten, Dokumenten in der Datenbank, die eine spezielle ID besitzen, spezifiziert und ordnen die Dokumente nach dem MapReduce-Algorithmus %cite
+ihrerseits nach gewählten Kategorien in \annot{B-Trees}. Pro Designdokument existiert ein \annot{Suchbaum}, den sich mehrere View teilen können.
+\subsection{Die CouchDB-API}
+CouchDB ist eine NOSQL-Datenbank. Das bedeutet, dass CouchDB zur Abfrage der Daten kein SQL erfordert, dass im Fall komplex strukturierter Dokumente \annot{auch} nicht gut geeignet ist. CouchDB verwendet als Abfragemethode ein HTTP-basiertes REST-API. REST (REpresentational State Transfer) ist ein Konzept, nach dem in diesem Fall die abzufragenden Informationen in der URL kodiert werden und so dem Dienst, in diesem Fall CouchDB, übermittelt werden. Die CouchDB-API ist nicht rein REST-basiert, teilweise werden Abfragedaten auch per HTTP-POST-Request im Body (dem Inhaltsteil eines HTTP-Daten-\pquote{Paketes}) übertragen.
+
+Ein API-Aufruf läuft in CouchDB prinzipiell folgendermaßen ab:
+\begin{enumerate}
+\item Der Client sendet eine HTTP-Anfrage an CouchDB, die notwendigen Parameter werden in der URL sowie unter Umständen im Request-Body übergeben.
+\item CouchDB bearbeitet die Anfrage und sendet das Resultat in JSON gekapselt zurück an den Client.
+\end{enumerate}
+\subsection{JSON}
+JSON, die JavaScript Object Notation, ist ein einfaches Format zur Repräsentation baumartig strukturierter Daten. JSON ist am ehesten mit XML zu vergleichen. Es ist diesem prinzipiell dahingehend ähnlich, dass die ausgedrückten Beziehungen ähnlich sind, es ist jedoch sehr viel einfacher. Die deutschsprachige Wikipedia äußert sich über JSON folgendermaßen:
+\begin{quote}
+JSON kennt Objekte, Arrays, Zeichenketten, Zahlen, boolesche Werte (true, false) und null. Daten können beliebig verschachtelt werden, beispielsweise ist ein Array von Objekten möglich.\cite{wpjson}
+\end{quote}
+JSON ist zum Datenaustausch zwischen clientseitigem JavaScript und dem Server sehr beliebt, da es valides JavaScript ist und so zum Parsing in JavaScript kein zusätzlicher Code notwendig ist, wodurch es bezüglich der CPU-Ressourcen sparsam ist.
+
+CouchDB verwendet JSON sowohl intern zum Speichern der Daten als auch zur Kommunikation mit dem Client. Die Dokumente liegen im JSON-Format vor und sämtliche Ausgaben erfolgen in JSON.
+
+\section{Die Programmarchitektur}
+Das eigentliche Programm lebt innerhalb eines Scriptes in einer HTML-Datei. 
+Dieses \pquote{Haupt-Script} lädt nach Anfrage des Benutzers einzelne Knoten (die durch das Programm verwalteten Informationseinheiten) aus der Datenbank (in der diese durch Dokumente dargestellt werden) und rendert diese. Jeder Knoten enthält ein Attribut names \code{node\_type}, das angibt, welchen Typs der Knoten ist.
+
+Auf dem Server sind in einem Verzeichnis so genannte Renderer abgelegt, kleine JavaScript-Scripts, die jedes aus dem JavaScript-Objekt eines oder mehrerer Knotentypen HTML generieren, dass dem Benutzer angezeigt werden kann. Beim Start der Anwendung (Web-Application) lädt das Haupt-Script alle auf dem Server in einer Indexdatei eingetragenen Renderer, die sich daraufhin registrieren. Sobald das Haupt-Script nun beim Laden eines Knotens auf einen bis dato unbekannten Typ stößt, fragt es bei jedem geladenen Renderer ab, ob dieser den Knotentyp rendern kann. Sobald es dabei auf einen Renderer stößt, der sich den entsprechenden Knotentyp zu rendern fähig zeigt, wird dieser für diesen Knotentyp als Standardrenderer eingetragen.
+
+Der Benutzer kann einen anderen Renderer auswählen, der dann als neuer Standardrenderer für den aktuellen Knotentyp verwendet wird. Jeder Renderer bekommt als Argument zum Knoten die gewünschte Rolle, die er rendern soll. Momentan wird hier zwischen \code{show} zum normalen Anzeigen des Knotens und \code{summary} zum Rendern einer Kurzfassung (Titel, wichtigste Attribute) unterschieden. Jeder Renderer kann darüber hinaus Code enthalten, um einen leeren Knoten des Typs, den er rendert zu erstellen. Jeder Renderer muss beim Rendern der \code{show}-Rolle auch eine Bearbeitungsmöglichkeit für die Daten rendern.
+
+\subsection{Das Datenformat}
+Allen Knotentypen sind einige Angaben gemein. Zu diesen Angaben gehören der \pquote{Besitzer} des Knotens, das letzte Veränderungsdatum sowie ein Datenfeld, das in einen Teil für die \pquote{Summary} und einen für den \pquote{Rest} gegliedert ist. Hier werden die eigentlichen Daten gespeichert, in Summary lediglich der zum Rendern einer Kurzfassung notwendige Teil, in Rest das vollständige Dokument. Das hierbei verwendete Datenformat ist vollständig dem Renderer überlassen.
+
+\subsection{Tagging}
+Zur Organisation der Knoten besteht die Möglichkeit, einen Knoten mit einem anderen zu \pquote{taggen}. Tagging ist %couchdb: many-to-many
+eine \pquote{Many-to-Many}-Beziehung, mehrere Knoten können dasselbe Tag besitzen und ein Knoten kann mehrere Tags besitzen. Mittels Tagging können verschiedene Strukturen entstehen:
+\begin{enumerate}
+\item Es \emph{können} wie in einem Dateisystem Baumstrukturen (Hierarchien) entstehen, bei denen ein Knoten genau ein Tag hat, ein Knoten jedoch von mehreren Knoten als Tag verwendet werden kann.
+\item Eine weitere Möglichkeit ist, dass ein Knoten auch mehrere Tags haben kann, jedoch in keiner Beziehung sein eigenes Tag ist (d.h.\ dass auch kein Knoten, mit dem er getaggt ist, ihn als Tag besitzt etc.). Es liegt eine Polyhierarchie vor, mathematisch ist das ein gerichteter azyklischer Graph. 
+\item Die letzte, freiste und komplizierteste Möglichkeit ist, dass jeder Knoten beliebige Beziehungen zu anderen Knoten hat. Der hierbei entstehende gerichtete Graph kann zyklisch sein.
+\end{enumerate}
+Um durch diese Graphen zu navigieren, kann der Benutzer ein Tag auswählen. Ihm werden nun alle Knoten angezeigt, die dieses Tag besitzen. Die konkrete Umsetzung sieht so aus, dass ein CouchDB-View definiert ist, in dem sämtliche Knoten in ihrer Kurzfassung (als JSON-Objekte ohne das Attribut mit den vollständigen Daten) nach ihren Tags geordnet sind. Möchte sich der Benutzer nun alle Knoten ansehen, die mit einem bestimmten Knoten getaggt sind, wählt er diesen Knoten aus, worauf eine Anfrage an CouchDB-gestartet wird, deren Ergebnis in einem temporären Knoten gespeichert wird. Dieser temporäre Knoten hat den Knotentyp \code{node\_list}. Er existiert nicht in der Datenbank sondern nur lokal und wird nun mit einem Renderer zu einer Graphischen Repräsentation der Knoten umgewandelt. In einer einfachen Form sieht das so aus, dass die vom jeweiligen Knotenrenderer gerenderten Kurzfassungen der Knoten wie bei einem Dateimanager in einer Liste untereinander angezeigt werden.
+\subsection{Der Listenrenderer}
+Der Listenrenderer ist ein sehr einfaches Stück Code. Er überführt die Liste der Knoten in einer for-Schleife in einen HTML-Baum, dessen Blätter die in \code{<div>}-Elementen eingeschlossenen vom jeweiligen Knotenrenderer gerenderten Kurzfassungen der Knoten sind.
+\subsection{Der Notizrenderer}
+Als einen Beispielrenderer habe ich den Notizrenderer programmiert. Meine ursprüngliche Intention beim Schreiben dieses Programms war, es als verbesserte digitale Notizverwaltung zu verwenden. Der Notizrenderer definitert den Knotentyp \code{note}. Er enthält auch ein Callback, das vom Haupt-Script verwendet werden kann, um einen neuen, leeren Knoten dieses Typs zu generieren.
+
+Im \code{summary}-Datenteil des Knotens werden bei Notizen die Länge in Wörtern sowie die ersten 10 Wörter der Notiz gespeichert. Die Zusammenfassung wird gerendert, indem die Wortanzahl und die im \code{summary}-Teil des Knotens gespeicherten ersten 10 Wörter in \code{<div>}-Blöcke gesetze werden. Für die Anzeige des gesamten Knotens wird der gesamte Text in einem \code{<div>}-Block angezeigt. Bei einem Klick darauf wird dieser Block mit etwas JavaScript in eine \code{<textarea>} umgewandelt. Nun kann der Benutzer die Notiz bearbeiten. Klickt er zum Übernehmen der Änderungen auf den ebenfalls gerenderten \code{Speichern}-Button, wechselt die Anzeige wieder zum herkömmlichen \code{<div>}-Element und die Änderungen werden in der JSON-Repräsentation des aktuellen Knotens gespeichert. Zuletzt wird noch eine Funktion aufgerufen, die dem Haupt-Script mitteilt, dass eine Bearbeitungsaktion abgeschlossen wurde und der Knoten somit in der Datenbank gespeichert werden kann.
+\subsection{Der Renderer für strukturierte Daten}
+Eine Verallgemeinerung dieses Prinzips ist ein (noch nicht programmierter) Renderer, der die JSON eines Knotens nimmt und sämtliche angegebenen Felder in ihrer Hierarchie anzeigt. Solche Darstellungen werden beispielsweise in der Firefox-Erweiterung \emph{Firebug}\cite{firebug} sowie in \emph{Futon}\cite{futon}, dem integrierten graphischen Datenbankmanager von CouchDB verwendet.
+
+In der so erstellten Übersicht aller Attribute eines Knotens können diese bearbeitet sowie neue hinzugefügt werden. Die Metadaten der STM-Messung finden hier ihren Platz. Die Ebeneninformationen werden in einem der üblichen Dateiformate abgelegt und als Anhang (\emph{Attachment}) des den Knoten repräsentierenden Dokumentes in CouchDB hochgeladen. Hierbei müsste die zum Exportieren der Daten genutze Anwendung die Aufgabe übernehmen, Vorschaubilder für die Ebenen in einem webüblichen Grafikformat (\code{jpg}, \code{png} etc.) zu generieren, sodass der Benutzer schon in der Übersicht einen Blick auf die eigentliche Messung werfen kann.
+
+\section{Zusammenfassung und Fazit}
+Der bisherige Stand der Webanwendung (die im übrigen mangels besserer Vorschläge den Namen \emph{Taskforce} trägt) ist, dass diese wiewohl noch nicht für den Alltagsgebrauch geeignet doch schon die Hauptfunktionalität besitzt. Der aktuellste Quelltext kann vom geneigten 
+
+\clearpage
+\textsf{\huge Anhang}
+\appendix
+
+\section{Literaturverzeichnis}
+\vspace{-1.5cm}
+\nocite{*}
+\bibliographystyle{plain}
+\renewcommand{\refname}{}
+\bibliography{literatur}
+\bigskip
+
+\section{Glossar}
+\begin{description}
+\blitem{NOSQL}{No(t Only) SQL}{Datenbank, die neben oder statt SQL andere Abfragesprachen zur Verfügung stellt}
+%SQL
+%STM
+%Extended Attributes
+%API
+%rendern
+%JSON
+%HTML
+%FAT (32)
+%Web-Application
+%Parsing
+%Client
+%Server
+%Design Document
+%View
+%HTTP
+%Header/Body
+%UUID
+%Request (POST/GET/PUT/DELETE/etc.)
+%JavaScript
+%Apache
+%REST
+%Suchbaum
+%mod_proxy
+%XML
+%CouchDB
+\end{description}
+\end{document}
